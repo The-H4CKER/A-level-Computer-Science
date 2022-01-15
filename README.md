@@ -1,2 +1,2 @@
 # A-level-Computer-Science
-School Work
+This repository contains my school work (mostly Java).
