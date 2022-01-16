@@ -18,7 +18,7 @@ public class Calculator extends JFrame implements ActionListener {
 	JTextPane screen = new JTextPane();
 	// "Dictionaries" to keep track of buttons
 	HashMap<String, JButton> numberButtons = addKeys(numbers, "7", "8", "9", "4", "5", "6", "1", "2", "3", ".", "0", "=");
-	HashMap<String, JButton> operationButtons = addKeys(operations, "+", "-", "x", "÷");
+	HashMap<String, JButton> operationButtons = addKeys(operations, "+", "-", "x", "Ã·");
 	HashMap<String, JButton> delClrButtons = addKeys(delClr, "del", "clr");
 
 	public Calculator() {
@@ -62,17 +62,18 @@ public class Calculator extends JFrame implements ActionListener {
 					switch (operation) {
 					case "+" -> first += second;
 					case "-" -> first -= second;
-					case "÷" -> first /= second;
+					case "Ã·" -> first /= second;
 					case "x" -> first *= second;
 					}
 					screen.setText(first + "");
-				} else if (numberString.equals("."))
+				} 
+				else if (numberString.equals("."))
 					screen.setText(screen.getText().concat("."));
 				else if (!(numberString.equals("0") && screen.getText().equals("")))
 					screen.setText(screen.getText() + numberString);
 			}
 		}
-		// Check if +, -, x or ÷ was pressed
+		// Check if +, -, x or Ã· was pressed
 		for (String operationString : operationButtons.keySet()) {
 			if (e.getSource().equals(operationButtons.get(operationString))) {
 				first = Double.parseDouble(screen.getText());
