@@ -1,87 +1,99 @@
 package lists;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class LinkedList {
-
 	Node head;
 	Node tail;
-	ArrayList<Node> list;
 
-	LinkedList() {
-		this.head = null;
-		this.tail = null;
-		this.list = new ArrayList<Node>();
+	LinkedList(int... dataValues) {
+		for (int dataValue : dataValues) 
+			InsertNode(new Node(dataValue, null, null));
 	}
 
-	Node getFirst() {
+	boolean IsEmpty() {
+		return GetHead() == null;
+	}
+
+	Node GetHead() {
 		return head;
 	}
 
-	Node getLast() {
+	Node GetTail() {
 		return tail;
 	}
 
-	Node get(int index) {
-		Node node = head;
-		for (int i = 1; i < index; i++) {
-			node = node.getNxtNode();
+	void SetHead(Node newHead) {
+		head = newHead;
+	}
+
+	void SetTail(Node newTail) {
+		tail = newTail;
+	}
+
+	ArrayList<Integer> GetLinkedList() {
+		ArrayList<Integer> orderedList = new ArrayList<Integer>();
+		for (Node currentNode = head; currentNode != null; currentNode = currentNode.GetNxtNode())
+			orderedList.add(Integer.valueOf(currentNode.GetDataField()));
+		return orderedList;
+	}
+
+	int Length() {
+		return GetLinkedList().size();
+	}
+
+	void AddNode(Node node, Node prvNode, Node nxtNode) {
+		node.SetNxtNode(nxtNode);
+		node.SetPrvNode(prvNode);
+
+		if (prvNode == null)
+			SetHead(node);
+		else
+			prvNode.SetNxtNode(node);
+		if (nxtNode == null)
+			SetTail(node);
+		else
+			nxtNode.SetPrvNode(node);
+	}
+
+	Node GetNodeAt(int posInLinkedList) {
+		Node currentNode = head;
+		int indexPos = 0;
+		while (currentNode != null && indexPos != posInLinkedList) {
+			currentNode = currentNode.GetNxtNode();
+			indexPos++;
 		}
-		return node;
+		return currentNode;
 	}
 
-	void addFirst(int dataField) {
-		Node newNode = new Node(dataField, null, this.head);
-		head.setPrvNode(newNode);
-		list.add(newNode);
+	void InsertNode(Node newNode, int posNxtNode) {
+		posNxtNode = Math.min(posNxtNode, Length());
+		AddNode(newNode, GetNodeAt(posNxtNode - 1), GetNodeAt(posNxtNode));
 	}
 
-	void addLast(int dataField) {
-		Node newNode = new Node(dataField, this.tail, null);
-		tail.setNxtNode(newNode);
-		list.add(newNode);
+	void InsertNode(Node newNode) {
+		InsertNode(newNode, Length());
 	}
 
-	void insert(int dataField, int index) {
-		Node currentNode = get(index);
-		Node previousNode = currentNode.getPrvNode();
-		Node insertionNode = new Node(dataField, previousNode, currentNode);
-		//  Adds links to the new node
-		previousNode.setNxtNode(insertionNode);
-		currentNode.setPrvNode(insertionNode);
-	}
+	Node removeAtPosition(int posInLinkedList) {
+		Node deadNode = GetNodeAt(posInLinkedList);
+		Node prvNode = deadNode.GetPrvNode();
+		Node nxtNode = deadNode.GetNxtNode();
 
-	void removeFirst() {
-		list.remove(head);
-	}
+		if (prvNode == null)
+			SetHead(deadNode);
+		else
+			prvNode.SetNxtNode(deadNode);
+		if (nxtNode == null)
+			SetTail(deadNode);
+		else
+			nxtNode.SetPrvNode(deadNode);
 
-	void removeLast() {
-		list.remove(tail);
-	}
-	
-	void remove(int index) {
-		Node currentNode = get(index);
-		Node previousNode = currentNode.getPrvNode();
-		Node nextNode = currentNode.getNxtNode();
-		// Redirects links, bypassing middle node
-		previousNode.setNxtNode(nextNode);
-		nextNode.setPrvNode(previousNode);
-	}
-	
-	int size() {
-		return list.size();
-	}
-	
-	boolean isEmpty() {
-		return list.size() == 0;
+		return deadNode;
 	}
 
 	public String toString() {
-		String string = "";
-		for (Node n : this.list) {
-			string += n.toString();
-		}
-		return string;
+		return "[" + GetLinkedList().stream().map(Object::toString).collect(Collectors.joining(", ")) + "]";
 	}
-
 }
